@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Nutri App 1.1", layout="wide")
 
 import os
-import datetime  # AGREGADO ESTA LÍNEA
+from datetime import datetime
 from src.auth import create_user, login_with_token
 from src.qr_utils import generate_qr_image, decode_qr_from_image
 from src.foods import load_seed_foods, search_foods, calc_nutrition
