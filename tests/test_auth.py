@@ -10,6 +10,9 @@ from src.db import init_db
 
 def test_create_user_and_login():
     """Test: crear usuario, generar QR, decodificarlo y verificar login."""
+    # Inicializar base de datos y tablas
+    init_db()
+
     # Crear usuario
     user_id, token = create_user('Test User', 30, 'Male', 180, 75, 'maintain', 'maintain')
     assert user_id is not None

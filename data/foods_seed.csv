@@ -1,18 +1,186 @@
 name,category,kcal_100g,carbs_100g,fat_100g,protein_100g,fiber_100g,unit
-Huevo cocido,proteinas,155,1,10,13,0,g
-Huevo crudo,proteinas,155,1,10,13,0,g
-Arroz blanco cocido,granos,130,25,0.3,2.7,0.4,g
-Arroz blanco crudo,granos,366,78,0.6,6.8,2.7,g
-Pecho de pollo asado,proteinas,165,0,3.6,31,0,g
-Carne magra vacuna asada,proteinas,250,0,15,26,0,g
-Carne magra vacuna cruda,proteinas,250,0,15,26,0,g
-Pechuga de pollo cruda,proteinas,120,0,1.5,23,0,g
-Lácteos enteros,lacteos,62,5,3.3,3.2,0,g
-Pan blanco,panaderia,265,49,3,8,2.7,g
-Yogur natural,lacteos,61,4,3.8,4,0,g
-Plátano,frutas,89,23,0.3,1.1,2.6,g
-Manzana,frutas,52,14,0.3,0.3,2.4,g
-Papa cocida,vegetales,87,20,0.1,2.3,2.2,g
-Zanahoria cruda,vegetales,41,10,0.2,0.9,2.8,g
-Avena,granos,389,66,7,14,10,g
-Aceite de oliva,lacteos,884,0,100,0,0,g
+Arroz blanco cocido,Cereales y derivados,130,28.2,0.3,2.7,0.4,g
+Arroz blanco crudo,Cereales y derivados,365,80,0.7,7.1,1.3,g
+Arroz integral cocido,Cereales y derivados,123,25.6,1,2.7,1.6,g
+Arroz integral crudo,Cereales y derivados,370,77.2,2.9,7.9,3.5,g
+Avena en hojuelas cruda,Cereales y derivados,379,67.7,6.5,13.2,10.1,g
+Pan blanco,Cereales y derivados,265,49,3.2,9,2.7,g
+Pan integral,Cereales y derivados,247,41,3.4,13,7,g
+Pan de hamburguesa,Cereales y derivados,279,50,4.5,9.5,2.4,g
+Arepa de maíz blanca cocida,Cereales y derivados,219,46,1.5,4.8,2.5,g
+Pasta cocida,Cereales y derivados,158,30.9,0.9,5.8,1.8,g
+Pasta cruda,Cereales y derivados,371,74.7,1.5,13,3.2,g
+Tortilla de maíz,Cereales y derivados,218,44.6,2.9,5.7,6.3,g
+Tortilla de trigo,Cereales y derivados,312,51.4,8.1,8.2,2.9,g
+Quinoa cocida,Cereales y derivados,120,21.3,1.9,4.4,2.8,g
+Quinoa cruda,Cereales y derivados,368,64.2,6.1,14.1,7,g
+Maíz dulce cocido,Cereales y derivados,96,21,1.5,3.4,2.4,g
+Cereal de maíz (hojuelas),Cereales y derivados,357,84,0.4,7.5,3.3,g
+Galletas de soda,Cereales y derivados,421,74,11.7,9,2.7,g
+Cuscús cocido,Cereales y derivados,112,23.2,0.2,3.8,1.4,g
+Harina de trigo,Cereales y derivados,364,76.3,1,10.3,2.7,g
+Harina de maíz precocida,Cereales y derivados,360,79,1.5,7,5,g
+Cebada perla cocida,Cereales y derivados,123,28.2,0.4,2.3,3.8,g
+Bulgur cocido,Cereales y derivados,83,18.6,0.2,3.1,4.5,g
+Granola,Cereales y derivados,471,64.4,20.1,10.1,5.3,g
+Palomitas de maíz (sin aceite),Cereales y derivados,387,77.8,4.5,12.9,14.5,g
+Papa cocida,Tubérculos y plátanos,87,20.1,0.1,1.9,1.8,g
+Papa cruda,Tubérculos y plátanos,77,17.5,0.1,2,2.2,g
+Papa frita a la francesa,Tubérculos y plátanos,312,41,15,3.4,3.8,g
+Batata (camote) cocida,Tubérculos y plátanos,90,20.7,0.2,2,3.3,g
+Yuca cruda,Tubérculos y plátanos,160,38.1,0.3,1.4,1.8,g
+Ñame cocido,Tubérculos y plátanos,116,27.5,0.1,1.5,3.9,g
+Plátano maduro cocido,Tubérculos y plátanos,116,31.2,0.2,0.8,2.3,g
+Plátano verde crudo,Tubérculos y plátanos,122,31.9,0.4,1.3,2.3,g
+Remolacha cocida,Tubérculos y plátanos,44,10,0.2,1.7,2,g
+Zanahoria cruda,Tubérculos y plátanos,41,9.6,0.2,0.9,2.8,g
+Zanahoria cocida,Tubérculos y plátanos,35,8.2,0.2,0.8,3,g
+Ahuyama (calabaza) cocida,Tubérculos y plátanos,20,4.9,0.1,0.7,1.1,g
+Huevo entero cocido,Carnes y huevos,155,1.1,10.6,12.6,0,unidad
+Huevo entero crudo,Carnes y huevos,143,0.7,9.5,12.6,0,unidad
+Huevo frito,Carnes y huevos,196,0.8,14.8,13.6,0,unidad
+Clara de huevo cruda,Carnes y huevos,52,0.7,0.2,10.9,0,unidad
+Yema de huevo cruda,Carnes y huevos,322,3.6,26.5,15.9,0,unidad
+Pechuga de pollo cocida sin piel,Carnes y huevos,165,0,3.6,31,0,g
+Pechuga de pollo cruda sin piel,Carnes y huevos,120,0,2.6,22.5,0,g
+Muslo de pollo cocido sin piel,Carnes y huevos,209,0,10.9,26,0,g
+Pollo asado con piel,Carnes y huevos,239,0,13.6,27.3,0,g
+Pechuga de pavo cocida,Carnes y huevos,135,0,0.7,30,0,g
+Carne molida de res cocida (85% magra),Carnes y huevos,250,0,15,26,0,g
+Carne molida de res cruda (85% magra),Carnes y huevos,215,0,15,18.6,0,g
+Lomo de res cocido,Carnes y huevos,206,0,9,29,0,g
+Carne de res cocida (corte magro),Carnes y huevos,217,0,11.8,26,0,g
+Hígado de res cocido,Carnes y huevos,175,5.1,4.7,27.4,0,g
+Lomo de cerdo cocido,Carnes y huevos,143,0,3.5,26.2,0,g
+Chuleta de cerdo cocida,Carnes y huevos,231,0,14.5,24,0,g
+Tocineta cocida,Carnes y huevos,541,1.4,42,37,0,g
+Jamón de cerdo cocido,Carnes y huevos,145,1.5,5.5,21,0,g
+Salchicha tipo perro caliente,Carnes y huevos,290,4,26,10.4,0,g
+Chorizo de cerdo,Carnes y huevos,455,1.9,38.3,24.1,0,g
+Chicharrón de cerdo,Carnes y huevos,544,0,31.3,61.3,0,g
+Salmón cocido,Pescados y mariscos,206,0,12,22.1,0,g
+Salmón crudo,Pescados y mariscos,208,0,13.4,20.4,0,g
+Atún enlatado en agua,Pescados y mariscos,116,0,0.8,25.5,0,g
+Atún enlatado en aceite escurrido,Pescados y mariscos,198,0,8.2,29.1,0,g
+Tilapia cocida,Pescados y mariscos,128,0,2.7,26.2,0,g
+Bacalao cocido,Pescados y mariscos,105,0,0.9,22.8,0,g
+Sardinas enlatadas en aceite,Pescados y mariscos,208,0,11.5,24.6,0,g
+Camarón cocido,Pescados y mariscos,99,0.2,1.1,24,0,g
+Leche entera,Lácteos,61,4.8,3.3,3.2,0,ml
+Leche semidescremada,Lácteos,50,4.8,1.9,3.3,0,ml
+Leche descremada,Lácteos,34,5,0.1,3.4,0,ml
+Yogur natural entero,Lácteos,61,4.7,3.3,3.5,0,g
+Yogur natural sin grasa,Lácteos,56,7.7,0.2,5.7,0,g
+Yogur griego natural entero,Lácteos,97,4,5,9,0,g
+Yogur griego natural sin grasa,Lácteos,59,3.6,0.4,10.2,0,g
+Queso mozzarella,Lácteos,300,2.2,22.4,22.2,0,g
+Queso cheddar,Lácteos,403,1.3,33.1,24.9,0,g
+Queso fresco campesino,Lácteos,270,3,20,19,0,g
+Queso parmesano,Lácteos,431,4.1,28.6,38.5,0,g
+Queso crema,Lácteos,342,4.1,34.2,6.2,0,g
+Requesón (ricotta),Lácteos,174,3,13,11.3,0,g
+Mantequilla,Lácteos,717,0.1,81.1,0.9,0,g
+Crema de leche,Lácteos,340,2.8,36,2.1,0,g
+Leche condensada,Lácteos,321,54.4,8.7,7.9,0,g
+Frijoles negros cocidos,Legumbres,132,23.7,0.5,8.9,8.7,g
+Frijoles rojos cocidos,Legumbres,127,22.8,0.5,8.7,6.4,g
+Frijoles pintos cocidos,Legumbres,143,26.2,0.7,9,9,g
+Lentejas cocidas,Legumbres,116,20.1,0.4,9,7.9,g
+Lentejas crudas,Legumbres,352,63.4,1.1,24.6,10.7,g
+Garbanzos cocidos,Legumbres,164,27.4,2.6,8.9,7.6,g
+Garbanzos crudos,Legumbres,364,60.7,6,19.3,17.4,g
+Arvejas verdes cocidas,Legumbres,84,15.6,0.2,5.4,5.5,g
+Edamame cocido,Legumbres,121,8.9,5.2,11.9,5.2,g
+Tofu firme,Legumbres,144,2.8,8.7,17.3,2.3,g
+Hummus,Legumbres,166,14.3,9.6,7.9,6,g
+Manzana,Frutas,52,13.8,0.2,0.3,2.4,g
+Banano,Frutas,89,22.8,0.3,1.1,2.6,g
+Naranja,Frutas,47,11.8,0.1,0.9,2.4,g
+Mandarina,Frutas,53,13.3,0.3,0.8,1.8,g
+Fresa,Frutas,32,7.7,0.3,0.7,2,g
+Mora,Frutas,43,9.6,0.5,1.4,5.3,g
+Uvas,Frutas,69,18.1,0.2,0.7,0.9,g
+Piña,Frutas,50,13.1,0.1,0.5,1.4,g
+Mango,Frutas,60,15,0.4,0.8,1.6,g
+Papaya,Frutas,43,10.8,0.3,0.5,1.7,g
+Sandía,Frutas,30,7.6,0.2,0.6,0.4,g
+Melón,Frutas,34,8.2,0.2,0.8,0.9,g
+Pera,Frutas,57,15.2,0.1,0.4,3.1,g
+Durazno,Frutas,39,9.5,0.3,0.9,1.5,g
+Kiwi,Frutas,61,14.7,0.5,1.1,3,g
+Maracuyá,Frutas,97,23.4,0.7,2.2,10.4,g
+Guayaba,Frutas,68,14.3,1,2.6,5.4,g
+Limón,Frutas,29,9.3,0.3,1.1,2.8,g
+Aguacate,Frutas,160,8.5,14.7,2,6.7,g
+Coco fresco,Frutas,354,15.2,33.5,3.3,9,g
+Arándanos,Frutas,57,14.5,0.3,0.7,2.4,g
+Cereza,Frutas,63,16,0.2,1.1,2.1,g
+Ciruela,Frutas,46,11.4,0.3,0.7,1.4,g
+Dátiles,Frutas,282,75,0.4,2.5,8,g
+Pasas,Frutas,299,79.2,0.5,3.1,3.7,g
+Tomate,Verduras,18,3.9,0.2,0.9,1.2,g
+Cebolla cabezona,Verduras,40,9.3,0.1,1.1,1.7,g
+Cebolla larga,Verduras,32,7.3,0.2,1.8,2.6,g
+Ajo,Verduras,149,33.1,0.5,6.4,2.1,g
+Pimentón rojo,Verduras,31,6,0.3,1,2.1,g
+Pimentón verde,Verduras,20,4.6,0.2,0.9,1.7,g
+Lechuga,Verduras,15,2.9,0.2,1.4,1.3,g
+Espinaca cruda,Verduras,23,3.6,0.4,2.9,2.2,g
+Espinaca cocida,Verduras,23,3.8,0.3,3,2.4,g
+Brócoli crudo,Verduras,34,6.6,0.4,2.8,2.6,g
+Brócoli cocido,Verduras,35,7.2,0.4,2.4,3.3,g
+Coliflor cocida,Verduras,23,4.1,0.5,1.8,2.3,g
+Pepino,Verduras,15,3.6,0.1,0.7,0.5,g
+Calabacín,Verduras,17,3.1,0.3,1.2,1,g
+Repollo,Verduras,25,5.8,0.1,1.3,2.5,g
+Champiñones,Verduras,22,3.3,0.3,3.1,1,g
+Habichuela cocida,Verduras,35,7.9,0.3,1.9,3.2,g
+Apio,Verduras,14,3,0.2,0.7,1.6,g
+Berenjena cocida,Verduras,35,8.7,0.2,0.8,2.5,g
+Acelga cocida,Verduras,20,4.1,0.1,1.9,2.1,g
+Cilantro,Verduras,23,3.7,0.5,2.1,2.8,g
+Almendras,Frutos secos y semillas,579,21.6,49.9,21.2,12.5,g
+Nueces,Frutos secos y semillas,654,13.7,65.2,15.2,6.7,g
+Maní tostado,Frutos secos y semillas,585,21.5,49.7,23.7,8,g
+Mantequilla de maní,Frutos secos y semillas,588,20,50,25,6,g
+Mantequilla de almendra,Frutos secos y semillas,614,18.8,55.5,21,10.3,g
+Marañón (anacardo),Frutos secos y semillas,553,30.2,43.9,18.2,3.3,g
+Pistachos,Frutos secos y semillas,560,27.2,45.3,20.2,10.6,g
+Avellanas,Frutos secos y semillas,628,16.7,60.8,15,9.7,g
+Semillas de chía,Frutos secos y semillas,486,42.1,30.7,16.5,34.4,g
+Semillas de linaza,Frutos secos y semillas,534,28.9,42.2,18.3,27.3,g
+Semillas de girasol,Frutos secos y semillas,584,20,51.5,20.8,8.6,g
+Semillas de ajonjolí,Frutos secos y semillas,573,23.5,49.7,17.7,11.8,g
+Semillas de calabaza,Frutos secos y semillas,559,10.7,49,30.2,6,g
+Aceite de oliva,Grasas y aceites,884,0,100,0,0,g
+Aceite vegetal,Grasas y aceites,884,0,100,0,0,g
+Aceite de coco,Grasas y aceites,862,0,100,0,0,g
+Margarina,Grasas y aceites,717,0.9,80.5,0.2,0,g
+Mayonesa,Grasas y aceites,680,0.6,75,1,0,g
+Manteca de cerdo,Grasas y aceites,902,0,100,0,0,g
+Azúcar blanca,Azúcares y dulces,387,100,0,0,0,g
+Panela,Azúcares y dulces,360,90,0,0.5,0,g
+Miel de abeja,Azúcares y dulces,304,82.4,0,0.3,0.2,g
+Chocolate negro (70-85% cacao),Azúcares y dulces,598,45.9,42.6,7.8,10.9,g
+Chocolate con leche,Azúcares y dulces,535,59.4,29.7,7.7,3.4,g
+Mermelada,Azúcares y dulces,278,68.9,0.1,0.4,1.1,g
+Arequipe (dulce de leche),Azúcares y dulces,315,55,7,7,0,g
+Helado de vainilla,Azúcares y dulces,207,23.6,11,3.5,0.7,g
+Cacao en polvo sin azúcar,Azúcares y dulces,228,57.9,13.7,19.6,33.2,g
+Salsa de tomate (ketchup),Azúcares y dulces,101,25.8,0.1,1,0.3,g
+Agua,Bebidas,0,0,0,0,0,ml
+Café negro sin azúcar,Bebidas,1,0,0,0.1,0,ml
+Té sin azúcar,Bebidas,1,0.3,0,0,0,ml
+Jugo de naranja natural,Bebidas,45,10.4,0.2,0.7,0.2,ml
+Jugo de manzana,Bebidas,46,11.3,0.1,0.1,0.2,ml
+Gaseosa de cola,Bebidas,42,10.6,0,0,0,ml
+Cerveza,Bebidas,43,3.6,0,0.5,0,ml
+Vino tinto,Bebidas,85,2.6,0,0.1,0,ml
+Leche de almendras sin azúcar,Bebidas,15,0.6,1.1,0.6,0.3,ml
+Leche de soya,Bebidas,54,6.3,1.8,3.3,0.6,ml
+Salsa de soya,Bebidas,53,4.9,0.6,8.1,0.8,ml
+Hamburguesa con queso (pan y carne),Procesados y comida rápida,295,30,14,15.5,1.5,g
+Perro caliente con pan,Procesados y comida rápida,247,22,12.8,10.4,1,g
+Pizza de queso,Procesados y comida rápida,266,33,10,11,2.3,g
+Papas fritas de paquete,Procesados y comida rápida,536,52.9,34.6,7,4.4,g
+Proteína whey en polvo (promedio revisar etiqueta),Procesados y comida rápida,400,8,6,78,0,g

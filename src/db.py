@@ -40,7 +40,7 @@ def init_db():
             fat_100g REAL NOT NULL,
             protein_100g REAL NOT NULL,
             fiber_100g REAL,
-            unit TEXT CHECK(unit IN ('g', 'ml')) DEFAULT 'g',
+            unit TEXT CHECK(unit IN ('g', 'ml', 'unidad')) DEFAULT 'g',
             owner_user_id INTEGER,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (owner_user_id) REFERENCES users (id) ON DELETE SET NULL

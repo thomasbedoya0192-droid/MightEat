@@ -8,8 +8,12 @@ from src.db import get_connection, DB_PATH
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def add_entry(user_id, food_id, grams, meal_type, eaten_at=None):
-    """Registrar una entrada de comida en el diario."""
+def add_entry(user_id, food_id, grams, meal_type, unit="g", eaten_at=None):
+    """Registrar una entrada de comida en el diario.
+    
+    grams: cantidad consumida (gramos, ml o unidades según `unit`).
+    unit: 'g', 'ml' o 'unidad'.
+    """
     if eaten_at is None:
         eaten_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
@@ -31,16 +35,15 @@ def add_entry(user_id, food_id, grams, meal_type, eaten_at=None):
         conn.close()
         raise PermissionError("You don't have permission to add this food")
     
-    # Obtener los datos nutricionales del alimento completo
-    # Usamos solo los campos que necesita calc_nutrition: id, name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g
-    # En ese orden específico (índices 0-6: id(0), name(1), kcal(2), carbs(3), fat(4), protein(5), fiber(6))
-    cur.execute("SELECT id, name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g FROM foods WHERE id = ?", (food_id,))
+    # Obtener los datos nutricionales del alimento incluyendo su unidad
+    cur.execute("SELECT id, name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit FROM foods WHERE id = ?", (food_id,))
     food_nutrition_row = cur.fetchone()
     
-    nutrition = calc_nutrition(food_nutrition_row, grams)
-    nutrition = calc_nutrition(food_nutrition_row, grams)
+    food_unit = food_nutrition_row[7] if len(food_nutrition_row) > 7 else "g"
     
-    # Insertar entrada en el diario
+    nutrition = calc_nutrition(food_nutrition_row, grams, food_unit)
+    
+    # Insertar entrada en el diario (columna 'grams' guarda la cantidad genérica)
     cur.execute(
         "INSERT INTO diary_entries (user_id, food_id, grams, meal_type, eaten_at, kcal, carbs, fat, protein, fiber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (user_id, food_id, grams, meal_type, eaten_at, 
@@ -90,10 +93,12 @@ def get_entries_by_date(user_id, date):
     
     cur.execute(
         """
-        SELECT id, food_id, grams, meal_type, eaten_at, kcal, carbs, fat, protein, fiber
-        FROM diary_entries
-        WHERE user_id = ? AND eaten_at >= ? AND eaten_at <= ?
-        ORDER BY meal_type, eaten_at
+        SELECT de.id, de.food_id, de.grams, de.meal_type, de.eaten_at, de.kcal, de.carbs, de.fat, de.protein, de.fiber,
+               f.name, f.unit
+        FROM diary_entries de
+        JOIN foods f ON de.food_id = f.id
+        WHERE de.user_id = ? AND de.eaten_at >= ? AND de.eaten_at <= ?
+        ORDER BY de.meal_type, de.eaten_at
         """,
         (user_id, date_start, date_end),
     )
@@ -115,6 +120,8 @@ def get_entries_by_date(user_id, date):
             "fat": row[7],
             "protein": row[8],
             "fiber": row[9],
+            "food_name": row[10],
+            "unit": row[11],
         })
     
     return entries

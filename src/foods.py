@@ -82,7 +82,6 @@ def search_foods(query: str, user_id: int = None):
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
                 WHERE owner_user_id = ? OR owner_user_id IS NULL
-                LIMIT 50
                 """,
                 (user_id,),
             )
@@ -91,7 +90,6 @@ def search_foods(query: str, user_id: int = None):
                 """
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
-                LIMIT 50
                 """
             )
     else:
@@ -102,7 +100,6 @@ def search_foods(query: str, user_id: int = None):
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
                 WHERE owner_user_id = ? OR owner_user_id IS NULL
-                LIMIT 50
                 """,
                 (user_id,),
             )
@@ -111,7 +108,6 @@ def search_foods(query: str, user_id: int = None):
                 """
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
-                LIMIT 50
                 """
             )
 
@@ -132,11 +128,8 @@ def search_foods(query: str, user_id: int = None):
         # Determinar si este alimento debería incluirse
         if not query:
             included = True
-        elif user_id is not None:
-            # Con query y user_id: incluir todos para ver catálogo completo
-            included = True
         else:
-            # Con query y SIN user_id: filtrar por si query normalizado está en nombre normalizado
+            # Filtrar por nombre normalizado (maneja tildes)
             included = norm_query in name_norm
 
         if included:
@@ -174,17 +167,24 @@ def create_custom_food(user_id: int, name: str, category: str = "",
     return food_id
 
 
-def calc_nutrition(food: tuple, grams: float):
-    """Recibe un tuple de food y la cantidad en gramos, devuelve dict con nutrientes.
+def calc_nutrition(food: tuple, amount: float, unit: str = "g"):
+    """Recibe un tuple de food, la cantidad y la unidad, devuelve dict con nutrientes.
     Tuple esperado: (id, name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g [, unit])
-    Los índices se basan en el SELECT que trae 7 columnas: id(0), name(1), kcal(2), carbs(3), fat(4), protein(5), fiber(6)"""
+    Los índices se basan en el SELECT que trae 7 columnas: id(0), name(1), kcal(2), carbs(3), fat(4), protein(5), fiber(6)
+    
+    Si unit == 'unidad', los valores nutricionales se entienden como 'por unidad'
+    y no se divide entre 100.
+    """
     kcal_100g = food[2]
     carbs_100g = food[3]
     fat_100g = food[4]
     protein_100g = food[5]
     fiber_100g = food[6] if len(food) > 6 else 0
 
-    factor = grams / 100.0
+    if unit == "unidad":
+        factor = amount
+    else:
+        factor = amount / 100.0
 
     return {
         "kcal": round(kcal_100g * factor, 2),

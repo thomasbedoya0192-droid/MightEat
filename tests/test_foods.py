@@ -32,8 +32,8 @@ def test_calc_nutrition():
 
     # 200 g de arroz cocido: 130 kcal/100g * 2 = 260 kcal
     assert result["kcal"] == 260.0, f"Expected 260.0 kcal, got {result['kcal']}"
-    # 200 g: 25 g/100g * 2 = 50 g de carbs
-    assert result["carbs"] == 50.0, f"Expected 50.0 carbs, got {result['carbs']}"
+    # 200 g: 28.2 g/100g * 2 = 56.4 g de carbs
+    assert result["carbs"] == 56.4, f"Expected 56.4 carbs, got {result['carbs']}"
     # 0.3 g/100g * 2 = 0.6 g de grasa
     assert result["fat"] == 0.6, f"Expected 0.6 fat, got {result['fat']}"
     # 2.7 g/100g * 2 = 5.4 g de proteína
@@ -69,9 +69,8 @@ def test_search_foods_user_scope():
     results = search_foods("avena", user_id=user_id)
     names = [r[1] for r in results]
     assert any("Avena propia" in n for n in names), f"Expected 'Avena propia' in results, got {names}"
-    # También debería encontrar el arroz del catálogo
-    has_general = any("Arroz" in n for n in names)
-    assert has_general, f"Expected general 'Arroz' in results, got {names}"
+    # También debería encontrar un alimento del catálogo general (mezcla propio + catálogo)
+    assert any("Avena en hojuelas" in n for n in names), f"Expected general food in results, got {names}"
 
     # Limpiar: borrar el alimento propio y el usuario
     conn = sqlite3.connect("/home/thomas/uni/semestre-5/Imaginacion_Creatividad/proyect/MightEat/data/app.db")

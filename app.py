@@ -250,19 +250,9 @@ def main_app():
             total_fat = 0
             
             for entry in entries:
-                # Usar food_id para obtener el nombre
-                try:
-                    conn = get_connection()
-                    cur = conn.cursor()
-                    cur.execute("SELECT name FROM foods WHERE id = ?", (entry["food_id"],))
-                    food_name = cur.fetchone()[0]
-                    conn.close()
-                except:
-                    food_name = f"Food {entry['food_id']}"
-                
                 col1, col2, col3 = st.columns([3, 1, 1])
                 with col1:
-                    st.write(f"{food_name} - {entry['grams']}g")
+                    st.write(f"{entry['food_name']} - {entry['grams']} {entry['unit']}")
                 with col2:
                     st.write(f"{entry['kcal']:.0f} kcal")
                 with col3:
@@ -297,17 +287,22 @@ def main_app():
                 for food in results[:5]:
                     col1, col2 = st.columns([3, 1])
                     with col1:
-                        st.write(f"{food[1]} - {food[3]} kcal/100g")
+                        unit_label = food[8]
+                        st.write(f"{food[1]} - {food[3]} kcal/100g ({unit_label})")
                     with col2:
-                        grams = st.number_input("Gramos", min_value=1, value=100, key=f"grams_{food[0]}")
+                        if unit_label == "unidad":
+                            amount = st.number_input("Cantidad", min_value=1, value=1, step=1, key=f"grams_{food[0]}")
+                        else:
+                            amount = st.number_input("Gramos", min_value=1, value=100, key=f"grams_{food[0]}")
                         if st.button("Añadir", key=f"add_meal_{food[0]}"):
                             add_entry(
                                 user_id=st.session_state.user["id"],
                                 food_id=food[0],
-                                grams=grams,
-                                meal_type="comida"
+                                grams=amount,
+                                meal_type="comida",
+                                unit=unit_label,
                             )
-                            st.success(f"Añadido {grams}g de {food[1]}")
+                            st.success(f"Añadido {amount} {unit_label} de {food[1]}")
                             st.rerun()
         
         # Opción 2: Agregar alimento personalizado
