@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 from src.auth import create_user, login_with_token
 from src.qr_utils import generate_qr_image, decode_qr_from_image
-from src.foods import load_seed_foods, search_foods, calc_nutrition
+from src.foods import load_seed_foods, search_foods, calc_nutrition, create_custom_food
 from src.diary import add_entry, delete_entry, get_entries_by_date, get_daily_totals
 from src.db import init_db, get_connection
 import io
@@ -324,16 +324,27 @@ def main_app():
                 fat = round(p_fat_100 * factor, 2) if p_fat_100 > 0 else 0
                 carbs = round(p_carbs_100 * factor, 2) if p_carbs_100 > 0 else 0
                 
-                # Insertar directamente en el diario
-                conn = get_connection()
-                cur = conn.cursor()
-                cur.execute(
-                    "INSERT INTO diary_entries (user_id, food_id, grams, meal_type, eaten_at, kcal, carbs, fat, protein, fiber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    (st.session_state.user["id"], -1, p_grams, "comida", datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-                     kcal, carbs, fat, protein, 0)
+                # Crear el alimento personalizado del usuario en el catálogo
+                food_id = create_custom_food(
+                    user_id=st.session_state.user["id"],
+                    name=p_name,
+                    category="personalizado",
+                    kcal_100g=p_kcal_100,
+                    carbs_100g=p_carbs_100,
+                    fat_100g=p_fat_100,
+                    protein_100g=p_protein_100,
+                    fiber_100g=0,
+                    unit="g",
                 )
-                conn.commit()
-                conn.close()
+                
+                # Registrar la entrada en el diario usando add_entry (maneja cálculo y unidad)
+                add_entry(
+                    user_id=st.session_state.user["id"],
+                    food_id=food_id,
+                    grams=p_grams,
+                    meal_type="comida",
+                    unit="g",
+                )
                 
                 st.success(f"Añadida comida personalizada: {kcal:.0f} kcal, {protein:.1f}g proteinas")
                 st.rerun()
