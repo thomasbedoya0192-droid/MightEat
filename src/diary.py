@@ -2,7 +2,7 @@ import sqlite3
 import os
 from datetime import datetime
 
-from src.foods import calc_nutrition, search_foods
+from src.foods import calc_nutrition, search_foods, load_seed_foods
 from src.db import get_connection, DB_PATH
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,9 +16,7 @@ def add_entry(user_id, food_id, grams, meal_type, eaten_at=None):
     conn = get_connection()
     cur = conn.cursor()
     
-    # Verificar que el usuario es dueño de este food_id o es del catálogo
-    # (Simplified: we assume food_id belongs to this user or is general)
-    # We need to check ownership
+    # Verificar que el food_id existe y a quién pertenece
     cur.execute("SELECT owner_user_id FROM foods WHERE id = ?", (food_id,))
     row = cur.fetchone()
     
@@ -26,24 +24,21 @@ def add_entry(user_id, food_id, grams, meal_type, eaten_at=None):
         conn.close()
         raise ValueError(f"Food with id {food_id} not found")
     
-    food_owner_user_id = row[0]
+    food_owner_user_id = row[0]  # owner_user_id es la primera columna
     
     # Allow if food is from catalog (owner_user_id is None) or belongs to user
     if food_owner_user_id is not None and food_owner_user_id != user_id:
         conn.close()
         raise PermissionError("You don't have permission to add this food")
     
-    # Calcular nutrientes para la cantidad en gramos
-    # We need to get food details first
-    cur.execute("SELECT name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g FROM foods WHERE id = ?", (food_id,))
-    food_row = cur.fetchone()
+    # Obtener los datos nutricionales del alimento completo
+    # Usamos solo los campos que necesita calc_nutrition: id, name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g
+    # En ese orden específico (índices 0-6: id(0), name(1), kcal(2), carbs(3), fat(4), protein(5), fiber(6))
+    cur.execute("SELECT id, name, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g FROM foods WHERE id = ?", (food_id,))
+    food_nutrition_row = cur.fetchone()
     
-    if food_row is None:
-        conn.close()
-        raise ValueError(f"Food with id {food_id} not found")
-    
-    name = food_row[0]
-    nutrition = calc_nutrition(food_row, grams)
+    nutrition = calc_nutrition(food_nutrition_row, grams)
+    nutrition = calc_nutrition(food_nutrition_row, grams)
     
     # Insertar entrada en el diario
     cur.execute(
@@ -158,3 +153,33 @@ def get_daily_totals(user_id, date):
     }
     
     return totals
+
+
+def search_foods_for_user(query: str, user_id: int) -> list:
+    """Buscar alimentos que el usuario pueda agregar.
+    
+    Devuelve alimentos del catálogo general disponibles para este usuario.
+    """
+    # Cargar alimentos si la tabla está vacía
+    load_seed_foods()
+    
+    # Buscar en catálogo general (sin restricción de user_id para ver todos los alimentos base)
+    results = search_foods(query, user_id=None)
+    
+    # Formatear resultados para la UI
+    formatted = []
+    for row in results:
+        # row: (id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit)
+        formatted.append({
+            "id": row[0],
+            "name": row[1],
+            "category": row[2],
+            "kcal_100g": row[3],
+            "carbs_100g": row[4],
+            "fat_100g": row[5],
+            "protein_100g": row[6],
+            "fiber_100g": row[7],
+            "unit": row[8],
+        })
+    
+    return formatted

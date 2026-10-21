@@ -26,7 +26,10 @@ def get_connection():
 
 
 def load_seed_foods(csv_path: str = None):
-    """Carga el CSV de alimentos solo si la tabla foods está vacía."""
+    """Carga el CSV de alimentos solo si la tabla foods está vacía.
+    
+    Incluye alimentos base estándar: huevo, arroz, pollo, carne, etc.
+    Los valores son por cada 100g."""
     if csv_path is None:
         csv_path = os.path.join(BASE_DIR, "data", "foods_seed.csv")
 
@@ -61,23 +64,25 @@ def load_seed_foods(csv_path: str = None):
 
 def search_foods(query: str, user_id: int = None):
     """Busca alimentos por nombre, ignorando mayúsculas/minúsculas y tildes.
-    Devuelve máximo 20 resultados: alimentos del catálogo general y los propios del usuario."""
+    Devuelve máximo 20 resultados: alimentos del catálogo general y los propios del usuario.
+    
+    Para user_id None: busca en catálogo general.
+    Para user_id entero: busca alimentos propios + catálogo general."""
     conn = get_connection()
     cur = conn.cursor()
 
     # Normalizar la query para filtrado en Python
     norm_query = _normalize(query) if query else ""
 
-    # Traer candidatos dependiendo de si hay query y user_id
+    # Traer candidatos: si hay query, traer un lote grande; si no, traer según user_id
     if not query:
-        # Si query vacía: traer todos (máx 20), respetando user_id si se proporciona
         if user_id is not None:
             cur.execute(
                 """
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
                 WHERE owner_user_id = ? OR owner_user_id IS NULL
-                LIMIT 20
+                LIMIT 50
                 """,
                 (user_id,),
             )
@@ -86,20 +91,18 @@ def search_foods(query: str, user_id: int = None):
                 """
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
-                LIMIT 20
+                LIMIT 50
                 """
             )
     else:
-        # Búsqueda: traer un lote grande para tener suficiente margen
-        # Cuando hay user_id, traer ambos tipos (propios y generales) sin filtrado estricto de nombre
-        # para asegurar que el usuario vea su catálogo completo
+        # Búsqueda: traer hasta 50 para tener suficiente margen
         if user_id is not None:
             cur.execute(
                 """
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
                 WHERE owner_user_id = ? OR owner_user_id IS NULL
-                LIMIT 100
+                LIMIT 50
                 """,
                 (user_id,),
             )
@@ -108,7 +111,7 @@ def search_foods(query: str, user_id: int = None):
                 """
                 SELECT id, name, category, kcal_100g, carbs_100g, fat_100g, protein_100g, fiber_100g, unit
                 FROM foods
-                LIMIT 100
+                LIMIT 50
                 """
             )
 
@@ -128,7 +131,6 @@ def search_foods(query: str, user_id: int = None):
 
         # Determinar si este alimento debería incluirse
         if not query:
-            # Sin query: incluir todo lo traído (ya limitado)
             included = True
         elif user_id is not None:
             # Con query y user_id: incluir todos para ver catálogo completo
@@ -140,7 +142,7 @@ def search_foods(query: str, user_id: int = None):
         if included:
             filtered.append(row)
 
-        # Detenernos en 20 resultados
+        # Detenernos en 20 resultados máximo
         if len(filtered) >= 20:
             break
 
