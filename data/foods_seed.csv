@@ -1,0 +1,19 @@
+name,category,kcal_100g,carbs_100g,fat_100g,protein_100g,fiber_100g,unit
+Arroz blanco cocido,granos,130,25,0.3,2.7,0.4,g
+Arroz blanco crudo,granos,366,78,0.6,6.8,2.7,g
+Huevo cocido,proteinas,155,1,10,13,0,g
+Huevo crudo,proteinas,155,1,10,13,0,g
+Pechuga de pollo asada,proteinas,165,0,3.6,31,0,g
+Leche entera,lacteos,62,5,3.3,3.2,0,g
+Pan blanco,panaderia,265,49,3,8,2.7,g
+Manzana,frutas,52,14,0.3,0.3,2.4,g
+Plátano,frutas,89,23,0.3,1.1,2.6,g
+Carne molida magra,proteinas,250,0,15,26,0,g
+Papa cocida,vegetales,87,20,0.1,2.3,2.2,g
+Zanahoria cruda,vegetables,41,10,0.2,0.9,2.8,g
+Avena,granos,389,66,7,14,10,g
+Aceite de oliva,lacteos,884,0,100,0,0,g
+Yogur natural,lacteos,61,4,3.8,4,0,g
+Pan integral,panaderia,247,41,3,8,2.7,g
+<brócoli cocido,vegetales,34,7,0.4,2.8,3.3,g
+Queso fresco,lacteos,265,2,21,18,0,g

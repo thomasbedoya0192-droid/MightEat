@@ -1,0 +1,6 @@
+data/app.db
+qr_codes/
+.env
+.venv/
+*.env
+.env*
