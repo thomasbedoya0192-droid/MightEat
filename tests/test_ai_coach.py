@@ -2,12 +2,22 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.ai_coach import build_user_context, ask_coach, set_ai_provider
+from src.ai_coach import build_user_context, ask_coach, set_ai_provider, get_recommendations
+from src.db import init_db
+from src.auth import create_user
+
+
+def _setup_user():
+    """Inicializa BD y crea un usuario de prueba, retorna user_id."""
+    init_db()
+    user = create_user('Test User', 30, 'Male', 180, 75, 'moderate', 'maintain')
+    return user[0]
 
 
 def test_build_user_context():
     """Test: build_user_context retorna estructura correcta."""
-    context = build_user_context(user_id=1, days=3)
+    user_id = _setup_user()
+    context = build_user_context(user_id=user_id, days=3)
     
     assert "perfil" in context, "Context should have 'perfil' key"
     assert "metas_diarias" in context, "Context should have 'metas_diarias' key"
@@ -25,10 +35,11 @@ def test_build_user_context():
 def test_ask_coach_mock():
     """Test: ask_coach en modo mock retorna respuesta."""
     set_ai_provider("mock")
+    user_id = _setup_user()
     
-    context = build_user_context(user_id=1, days=1)
+    context = build_user_context(user_id=user_id, days=1)
     question = "¿Cómo voy hoy?"
-    response = ask_coach(user_id=1, question=question, context=context)
+    response = ask_coach(user_id=user_id, question=question, context=context)
     
     assert response is not None, "Response should not be None"
     assert len(response) > 0, "Response should not be empty"
@@ -39,8 +50,9 @@ def test_ask_coach_mock():
 def test_ask_coach_different_questions():
     """Test: ask_coach con diferentes tipos de preguntas."""
     set_ai_provider("mock")
+    user_id = _setup_user()
     
-    context = build_user_context(user_id=1, days=1)
+    context = build_user_context(user_id=user_id, days=1)
     
     # Probar diferentes preguntas
     questions = [
@@ -50,9 +62,20 @@ def test_ask_coach_different_questions():
     ]
     
     for question in questions:
-        response = ask_coach(user_id=1, question=question, context=context)
+        response = ask_coach(user_id=user_id, question=question, context=context)
         assert response is not None, f"Response should not be None for question: {question}"
         assert len(response) > 0, f"Response should not be empty for question: {question}"
+
+
+def test_get_recommendations_mock():
+    """Test: get_recommendations en modo mock retorna recomendaciones."""
+    set_ai_provider("mock")
+    user_id = _setup_user()
+    
+    recomendaciones = get_recommendations(user_id)
+    assert recomendaciones is not None, "Recommendations should not be None"
+    assert len(recomendaciones) > 0, "Recommendations should not be empty"
+    assert "Recomendaciones" in recomendaciones, f"Expected header, got: {recomendaciones[:100]}"
 
 
 def test_set_ai_provider():

@@ -10,6 +10,7 @@ from src.qr_utils import generate_qr_image, decode_qr_from_image
 from src.foods import load_seed_foods, search_foods, calc_nutrition, create_custom_food
 from src.diary import add_entry, delete_entry, get_entries_by_date, get_daily_totals
 from src.db import init_db, get_connection
+from src.ai_coach import set_ai_provider, get_recommendations
 import io
 
 # Session state initialization
@@ -18,6 +19,9 @@ if "user" not in st.session_state:
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+
+if "ai_provider" not in st.session_state:
+    st.session_state.ai_provider = "mock"
 
 
 def login_screen():
@@ -175,6 +179,9 @@ def food_selection_screen(user_id):
 
 def main_app():
     """Aplicación principal después del login."""
+    # Restaurar proveedor de IA guardado en sesión
+    set_ai_provider(st.session_state.ai_provider)
+    
     st.sidebar.title(f"Hola, {st.session_state.user['name']}")
     st.sidebar.success("Sesión activa")
     
@@ -182,6 +189,7 @@ def main_app():
         "Mi balance",
         "Diario de comidas", 
         "Mis alimentos",
+        "Recomendaciones IA",
         "Configuración",
         "Cerrar sesión"
     ])
@@ -387,6 +395,30 @@ def main_app():
             total_kcal = sum(f[3] for f in user_foods)  # kcal_100g
             st.write(f"Total de kcal base (por 100g de cada): {total_kcal:.0f} kcal")
     
+    elif menu == "Recomendaciones IA":
+        st.title("Recomendaciones de Nutrición")
+        
+        st.subheader("Tu perfil y metas")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write(f"Nombre: {st.session_state.user.get('name', '')}")
+            st.write(f"Peso: {st.session_state.user.get('weight_kg', 0)} kg")
+            st.write(f"Altura: {st.session_state.user.get('height_cm', 0)} cm")
+        with col2:
+            st.write(f"Edad: {st.session_state.user.get('age', 0)}")
+            st.write(f"Objetivo: {st.session_state.user.get('goal', 'maintain')}")
+            st.write(f"Actividad: {st.session_state.user.get('activity_level', 'moderate')}")
+        
+        st.markdown("---")
+        
+        if st.button("Generar recomendaciones"):
+            with st.spinner("Generando recomendaciones..."):
+                recomendaciones = get_recommendations(st.session_state.user["id"])
+            st.markdown(recomendaciones)
+        
+        st.markdown("---")
+        st.info("Estas recomendaciones son generales y se basan en tus datos registrados. Para un plan personalizado, consulta a un nutricionista.")
+    
     elif menu == "Configuración":
         st.title("Configuración")
         
@@ -404,10 +436,10 @@ def main_app():
         
         # Configuración de IA
         st.subheader("Configuración de IA")
-        provider = st.selectbox("Proveedor de IA", ["mock", "claude", "openrouter"])
+        provider = st.selectbox("Proveedor de IA", ["mock", "claude", "openrouter", "gemini"])
         if st.button("Aplicar configuración de IA"):
-            from src.ai_coach import set_ai_provider
             set_ai_provider(provider)
+            st.session_state.ai_provider = provider
             st.success(f"Proveedor set a: {provider}")
         
         st.info("Los datos se guardan localmente en data/app.db")
