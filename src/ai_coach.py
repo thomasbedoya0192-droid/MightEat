@@ -41,7 +41,7 @@ AI_GEMINI_KEY = os.getenv("AI_GEMINI_KEY", "")
 GEMINI_MODEL = os.getenv("MODEL", "gemini-1.5-flash")
 
 
-def build_user_context(user_id: int, days: int = 7) -> Dict[str, Any]:
+def build_user_context(user_id: int, days: int = 7, user_profile: Optional[Dict] = None) -> Dict[str, Any]:
     """Contexto del usuario para el coach de IA.
     
     Returns un diccionario con:
@@ -49,47 +49,55 @@ def build_user_context(user_id: int, days: int = 7) -> Dict[str, Any]:
     - metas_diarias: kcal, carbs, fat, protein, fiber objetivo por día
     - historico: totales y alimentos por cada uno de los últimos 'days' días
     """
-    conn = get_connection()
-    cur = conn.cursor()
+    # Usar el perfil proporcionado (viene de st.session_state.user) o consultar la BD
+    if user_profile is not None:
+        nombre = user_profile.get("name", "")
+        edad = user_profile.get("age", 0)
+        sexo = user_profile.get("sex", "")
+        altura = user_profile.get("height_cm", 0)
+        peso = user_profile.get("weight_kg", 0)
+        actividad = user_profile.get("activity_level", "")
+        objetivo = user_profile.get("goal", "maintain")
+    else:
+        # Respaldo: consultar la BD (útil para tests sin session_state)
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT name, age, sex, height_cm, weight_kg, activity_level, goal FROM users WHERE id = ?",
+            (user_id,),
+        )
+        row = cur.fetchone()
+        conn.close()
 
-    # Obtener datos del usuario
-    cur.execute(
-        "SELECT name, age, sex, height_cm, weight_kg, activity_level, goal FROM users WHERE id = ?",
-        (user_id,),
-    )
-    row = cur.fetchone()
-    conn.close()
+        if row is None:
+            return {
+                "perfil": {
+                    "edad": 0,
+                    "sexo": "",
+                    "peso": 0,
+                    "altura": 0,
+                    "actividad": "",
+                    "objetivo": "maintain",
+                    "nombre": "",
+                },
+                "metas_diarias": {
+                    "kcal": 0,
+                    "carbs": 0,
+                    "fat": 0,
+                    "protein": 0,
+                    "fiber": 0,
+                },
+                "consumo_promedio": {
+                    "kcal": 0,
+                    "carbs": 0,
+                    "fat": 0,
+                    "protein": 0,
+                    "fiber": 0,
+                },
+                "historico": [],
+            }
 
-    if row is None:
-        # Usuario no encontrado, retornar estructura vacía
-        return {
-            "perfil": {
-                "edad": 0,
-                "sexo": "",
-                "peso": 0,
-                "altura": 0,
-                "actividad": "",
-                "objetivo": "maintain",
-                "nombre": "",
-            },
-            "metas_diarias": {
-                "kcal": 0,
-                "carbs": 0,
-                "fat": 0,
-                "protein": 0,
-                "fiber": 0,
-            },
-            "consumo_promedio": {
-                "kcal": 0,
-                "carbs": 0,
-                "fat": 0,
-                "protein": 0,
-                "fiber": 0,
-            },
-            "historico": [],
-        }
-
-    nombre, edad, sexo, altura, peso, actividad, objetivo = row
+        nombre, edad, sexo, altura, peso, actividad, objetivo = row
 
     # Calcular metas diarias usando el módulo de goals
     user_dict = {

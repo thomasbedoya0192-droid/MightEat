@@ -5,7 +5,7 @@ st.set_page_config(page_title="Nutri App 1.1", layout="wide")
 
 import os
 from datetime import datetime
-from src.auth import create_user, login_with_token
+from src.auth import create_user, login_with_token, update_user_profile
 from src.qr_utils import generate_qr_image, decode_qr_from_image
 from src.foods import load_seed_foods, search_foods, calc_nutrition, create_custom_food
 from src.diary import add_entry, delete_entry, get_entries_by_date, get_daily_totals
@@ -22,6 +22,9 @@ if "logged_in" not in st.session_state:
 
 if "ai_provider" not in st.session_state:
     st.session_state.ai_provider = "mock"
+
+if "ai_recommendations" not in st.session_state:
+    st.session_state.ai_recommendations = None
 
 
 def login_screen():
@@ -44,43 +47,62 @@ def login_screen():
             submitted = st.form_submit_button("Crear cuenta y mostrar QR")
             if submitted:
                 user_id, token = create_user(name, age, sex.lower().capitalize(), height, weight, activity, goal)
-                st.session_state.user = {"id": user_id, "name": name}
+                st.session_state.user = {
+                    "id": user_id,
+                    "name": name,
+                    "age": age,
+                    "sex": sex.lower().capitalize(),
+                    "height_cm": height,
+                    "weight_kg": weight,
+                    "activity_level": activity,
+                    "goal": goal,
+                }
                 st.session_state.logged_in = True
-                
-                # Generar y mostrar QR
-                qr_img = generate_qr_image(token)
-                st.success(f"Cuenta creada para {name}!")
 
-                # Mostrar QR en pantalla
-                st.image(qr_img, caption="Tu QR de acceso", use_container_width=True)
-                
-                # Opciones de respaldo
-                st.info("Métodos alternativos de login:")
-                
-                # Opción 1: Subir imagen
-                uploaded_file = st.file_uploader("Subir imagen del QR", type=["png", "jpg", "jpeg"])
-                if uploaded_file is not None:
-                    bytes_data = uploaded_file.read()
-                    decoded = decode_qr_from_image(bytes_data)
-                    if decoded:
-                        st.session_state.user = {"id": user_id, "name": name}
-                        st.session_state.logged_in = True
-                        st.success("Login exitoso mediante imagen!")
-                        st.rerun()
-                    else:
-                        st.error("No se pudo decodificar el QR de la imagen")
-                
-                # Opción 2: Pegar token
-                token_input = st.text_input("O pegar el token aquí", value=token[:10] + "...")
-                if st.button("Login con token"):
-                    user = login_with_token(token_input)
-                    if user:
-                        st.session_state.user = {"id": user_id, "name": name}
-                        st.session_state.logged_in = True
-                        st.success("Login exitoso!")
-                        st.rerun()
-                    else:
-                        st.error("Token inválido")
+        if submitted:
+            # Generar y mostrar QR
+            qr_img = generate_qr_image(token)
+            st.success(f"Cuenta creada para {name}!")
+
+            # Mostrar QR en pantalla
+            st.image(qr_img, caption="Tu QR de acceso", width="stretch")
+
+            # Opciones de respaldo
+            st.info("Métodos alternativos de login:")
+
+            # Opción 1: Subir imagen
+            uploaded_file = st.file_uploader("Subir imagen del QR", type=["png", "jpg", "jpeg"])
+            if uploaded_file is not None:
+                bytes_data = uploaded_file.read()
+                decoded = decode_qr_from_image(bytes_data)
+                if decoded:
+                    st.session_state.user = {
+                        "id": user_id,
+                        "name": name,
+                        "age": age,
+                        "sex": sex.lower().capitalize(),
+                        "height_cm": height,
+                        "weight_kg": weight,
+                        "activity_level": activity,
+                        "goal": goal,
+                    }
+                    st.session_state.logged_in = True
+                    st.success("Login exitoso mediante imagen!")
+                    st.rerun()
+                else:
+                    st.error("No se pudo decodificar el QR de la imagen")
+
+            # Opción 2: Pegar token
+            token_input = st.text_input("O pegar el token aquí", value=token[:10] + "...")
+            if st.button("Login con token"):
+                user = login_with_token(token_input)
+                if user:
+                    st.session_state.user = user
+                    st.session_state.logged_in = True
+                    st.success("Login exitoso!")
+                    st.rerun()
+                else:
+                    st.error("Token inválido")
         
         st.markdown("---")
         st.subheader("Iniciar sesión existente")
@@ -90,7 +112,7 @@ def login_screen():
             if submitted:
                 user = login_with_token(token)
                 if user:
-                    st.session_state.user = {"id": user["id"], "name": user["name"]}
+                    st.session_state.user = user
                     st.session_state.logged_in = True
                     st.success(f"Bienvenido, {user['name']}!")
                     st.rerun()
@@ -105,7 +127,7 @@ def login_screen():
             if submitted:
                 user = login_with_token(token)
                 if user:
-                    st.session_state.user = {"id": user["id"], "name": user["name"]}
+                    st.session_state.user = user
                     st.session_state.logged_in = True
                     st.success(f"Bienvenido, {user['name']}!")
                     st.rerun()
@@ -214,31 +236,59 @@ def main_app():
         
         # Metas personales
         st.subheader("Tus metas diarias")
-        activity = st.selectbox("Nivel de actividad", ["sedentary", "light", "moderate", "active"])
-        goal = st.selectbox("Objetivo", ["maintain", "lose_weight", "gain_weight"])
-        
-        if st.button("Calcular metas"):
-            from src.goals import calc_bmr, calc_tdee, calc_targets
-            bmr = calc_bmr(
-                st.session_state.user.get('sex', 'Male').lower(),
-                st.session_state.user.get('weight_kg', 75),
-                st.session_state.user.get('height_cm', 180),
-                st.session_state.user.get('age', 30)
-            )
-            tdee = calc_tdee(bmr, activity)
-            targets = calc_targets({
-                "age": st.session_state.user.get('age', 30),
-                "sex": st.session_state.user.get('sex', 'Male').lower(),
-                "weight_kg": st.session_state.user.get('weight_kg', 75),
-                "height_cm": st.session_state.user.get('height_cm', 180),
-                "activity_level": activity,
-                "goal": goal
-            })
-            
-            st.info(f"Kcal objetivo: {targets['kcal_goal']:.0f} kcal")
-            st.info(f"Proteinas objetivo: {targets['protein_grams']:.1f} g")
-            st.info(f"Carbohidratos objetivo: {targets['carbs_grams']:.1f} g")
-            st.info(f"Grasas objetivo: {targets['fat_grams']:.1f} g")
+
+        # Inicializar valores de session_state desde el perfil del usuario
+        if "balance_activity" not in st.session_state:
+            st.session_state.balance_activity = st.session_state.user.get("activity_level", "moderate")
+        if "balance_goal" not in st.session_state:
+            st.session_state.balance_goal = st.session_state.user.get("goal", "maintain")
+
+        activity = st.selectbox(
+            "Nivel de actividad",
+            ["sedentary", "light", "moderate", "active"],
+            key="balance_activity",
+        )
+        goal = st.selectbox(
+            "Objetivo",
+            ["maintain", "lose_weight", "gain_weight"],
+            key="balance_goal",
+        )
+
+        col_save, col_calc = st.columns(2)
+        with col_save:
+            if st.button("Guardar cambios"):
+                update_user_profile(
+                    st.session_state.user["id"],
+                    st.session_state.balance_activity,
+                    st.session_state.balance_goal,
+                )
+                st.session_state.user["activity_level"] = st.session_state.balance_activity
+                st.session_state.user["goal"] = st.session_state.balance_goal
+                st.success("Cambios guardados correctamente.")
+
+        with col_calc:
+            if st.button("Calcular metas"):
+                from src.goals import calc_bmr, calc_tdee, calc_targets
+                bmr = calc_bmr(
+                    st.session_state.user.get('sex', 'Male').lower(),
+                    st.session_state.user.get('weight_kg', 75),
+                    st.session_state.user.get('height_cm', 180),
+                    st.session_state.user.get('age', 30)
+                )
+                tdee = calc_tdee(bmr, st.session_state.balance_activity)
+                targets = calc_targets({
+                    "age": st.session_state.user.get('age', 30),
+                    "sex": st.session_state.user.get('sex', 'Male').lower(),
+                    "weight_kg": st.session_state.user.get('weight_kg', 75),
+                    "height_cm": st.session_state.user.get('height_cm', 180),
+                    "activity_level": st.session_state.balance_activity,
+                    "goal": st.session_state.balance_goal
+                })
+
+                st.info(f"Kcal objetivo: {targets['kcal_goal']:.0f} kcal")
+                st.info(f"Proteinas objetivo: {targets['protein_grams']:.1f} g")
+                st.info(f"Carbohidratos objetivo: {targets['carbs_grams']:.1f} g")
+                st.info(f"Grasas objetivo: {targets['fat_grams']:.1f} g")
     
     elif menu == "Diario de comidas":
         st.title("Diario de comidas")
@@ -414,7 +464,10 @@ def main_app():
         if st.button("Generar recomendaciones"):
             with st.spinner("Generando recomendaciones..."):
                 recomendaciones = get_recommendations(st.session_state.user["id"])
-            st.markdown(recomendaciones)
+            st.session_state.ai_recommendations = recomendaciones
+        
+        if st.session_state.ai_recommendations:
+            st.markdown(st.session_state.ai_recommendations)
         
         st.markdown("---")
         st.info("Estas recomendaciones son generales y se basan en tus datos registrados. Para un plan personalizado, consulta a un nutricionista.")
@@ -448,6 +501,7 @@ def main_app():
         if st.button("Cerrar sesión"):
             st.session_state.user = None
             st.session_state.logged_in = False
+            st.session_state.ai_recommendations = None
             st.rerun()
 
 

@@ -59,7 +59,7 @@ def login_with_token(token: str) -> dict | None:
     
     if row is None:
         return None
-    
+
     # Devolver datos del usuario (como diccionario)
     return {
         "id": row[0],
@@ -72,3 +72,15 @@ def login_with_token(token: str) -> dict | None:
         "activity_level": row[7],
         "goal": row[8],
     }
+
+
+def update_user_profile(user_id: int, activity_level: str, goal: str) -> None:
+    """Actualiza el nivel de actividad y el objetivo del usuario en la base de datos."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET activity_level = ?, goal = ? WHERE id = ?",
+        (activity_level, goal, user_id),
+    )
+    conn.commit()
+    conn.close()
