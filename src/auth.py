@@ -84,3 +84,15 @@ def update_user_profile(user_id: int, activity_level: str, goal: str) -> None:
     )
     conn.commit()
     conn.close()
+
+
+def save_user_targets(user_id: int, kcal_goal: float, protein_goal: float, carbs_goal: float, fat_goal: float, fiber_goal: float) -> None:
+    """Guarda las metas nutricionales calculadas del usuario en la base de datos."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET kcal_goal = ?, protein_goal = ?, carbs_goal = ?, fat_goal = ?, fiber_goal = ? WHERE id = ?",
+        (kcal_goal, protein_goal, carbs_goal, fat_goal, fiber_goal, user_id),
+    )
+    conn.commit()
+    conn.close()

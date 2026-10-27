@@ -63,7 +63,7 @@ def build_user_context(user_id: int, days: int = 7, user_profile: Optional[Dict]
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
-            "SELECT name, age, sex, height_cm, weight_kg, activity_level, goal FROM users WHERE id = ?",
+            "SELECT name, age, sex, height_cm, weight_kg, activity_level, goal, kcal_goal, protein_goal, carbs_goal, fat_goal, fiber_goal FROM users WHERE id = ?",
             (user_id,),
         )
         row = cur.fetchone()
@@ -97,18 +97,40 @@ def build_user_context(user_id: int, days: int = 7, user_profile: Optional[Dict]
                 "historico": [],
             }
 
-        nombre, edad, sexo, altura, peso, actividad, objetivo = row
+        (
+            nombre,
+            edad,
+            sexo,
+            altura,
+            peso,
+            actividad,
+            objetivo,
+            kcal_goal,
+            protein_goal,
+            carbs_goal,
+            fat_goal,
+            fiber_goal,
+        ) = row
 
-    # Calcular metas diarias usando el módulo de goals
-    user_dict = {
-        "sex": sexo,
-        "weight_kg": peso,
-        "height_cm": altura,
-        "age": edad,
-        "activity_level": actividad,
-        "goal": objetivo,
-    }
-    metas = calc_targets(user_dict)
+    # Calcular metas diarias: usar las guardadas en BD si existen, si no calcularlas
+    if kcal_goal is not None:
+        metas = {
+            "kcal": kcal_goal,
+            "protein": protein_goal if protein_goal is not None else 0,
+            "carbs": carbs_goal if carbs_goal is not None else 0,
+            "fat": fat_goal if fat_goal is not None else 0,
+            "fiber": fiber_goal if fiber_goal is not None else 0,
+        }
+    else:
+        user_dict = {
+            "sex": sexo,
+            "weight_kg": peso,
+            "height_cm": altura,
+            "age": edad,
+            "activity_level": actividad,
+            "goal": objetivo,
+        }
+        metas = calc_targets(user_dict)
 
     # Construir histórico de los últimos 'days' días
     historico = []

@@ -30,6 +30,14 @@ def init_db():
         )
     """)
 
+    # Columnas de metas nutricionales calculadas (para que la IA las use sin regenerar)
+    for col in ["kcal_goal REAL", "protein_goal REAL", "carbs_goal REAL", "fat_goal REAL", "fiber_goal REAL"]:
+        try:
+            cur.execute(f"ALTER TABLE users ADD COLUMN {col}")
+        except sqlite3.OperationalError:
+            # La columna ya existe, ignorar
+            pass
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS foods (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

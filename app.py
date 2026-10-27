@@ -5,7 +5,7 @@ st.set_page_config(page_title="Nutri App 1.1", layout="wide")
 
 import os
 from datetime import datetime
-from src.auth import create_user, login_with_token, update_user_profile
+from src.auth import create_user, login_with_token, update_user_profile, save_user_targets
 from src.qr_utils import generate_qr_image, decode_qr_from_image
 from src.foods import load_seed_foods, search_foods, calc_nutrition, create_custom_food
 from src.diary import add_entry, delete_entry, get_entries_by_date, get_daily_totals
@@ -285,10 +285,21 @@ def main_app():
                     "goal": st.session_state.balance_goal
                 })
 
+                # Guardar metas calculadas en BD para que la IA las use sin regenerar
+                save_user_targets(
+                    st.session_state.user["id"],
+                    targets["kcal_goal"],
+                    targets["protein_grams"],
+                    targets["carbs_grams"],
+                    targets["fat_grams"],
+                    targets.get("fiber_grams", 0),
+                )
+
                 st.info(f"Kcal objetivo: {targets['kcal_goal']:.0f} kcal")
                 st.info(f"Proteinas objetivo: {targets['protein_grams']:.1f} g")
                 st.info(f"Carbohidratos objetivo: {targets['carbs_grams']:.1f} g")
                 st.info(f"Grasas objetivo: {targets['fat_grams']:.1f} g")
+                st.success("Metas guardadas. La IA las usará en tus recomendaciones.")
     
     elif menu == "Diario de comidas":
         st.title("Diario de comidas")
